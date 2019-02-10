@@ -1,0 +1,71 @@
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+	http://www.springframework.org/schema/context 
+    http://www.springframework.org/schema/context/spring-context-4.3.xsd
+	http://www.springframework.org/schema/security
+	http://www.springframework.org/schema/security/spring-security-4.0.xsd">
+
+    <context:component-scan base-package="bucket.application.security"/>
+	<http auto-config="true" create-session="ifRequired">
+	 <access-denied-handler ref="myAccessDeniedHandler"/>
+		<!-- <access-denied-handler error-page="/403" />-->
+		
+		<!-- By default CSRF is enabled, to disable protection uncomment below tag  -->
+		<!--  <csrf disabled="true"/>  -->
+ 		<!-- <csrf request-matcher-ref="csrfSecurityRequestMatcher"/> -->
+		<!--Default Spring Security headers are below, to disable protection uncomment below tag  -->
+		<!--<headers defaults-disabled="true">
+		    <cache-control />
+	        <content-type-options />
+	        <hsts />
+	        <frame-options />
+	        <xss-protection block="false"/>
+	   </headers>-->
+	   
+	   <!--<headers defaults-disabled="true">
+	   <frame-options policy="SAMEORIGIN" />
+	   </headers> -->
+	   <headers>
+	   		<cache-control />
+    		<content-type-options />
+    		<hsts />
+    		<frame-options policy="SAMEORIGIN" />
+    		<xss-protection />
+	   </headers>
+	   
+	   <port-mappings>
+        	<!-- Default ports -->
+        	<port-mapping http="80" https="443"/>   
+        	<!-- <port-mapping http="8080" https="8443"/> -->
+       </port-mappings>
+	   <!-- Below tag describes that, all URLs within our application to be secured -->
+	   <intercept-url pattern="/**" access="permitAll" />
+	   
+	   <logout logout-url="/logout.do" delete-cookies="JSESSIONID"  /> <!-- invalidate-session="true" --> 
+	   
+        <csrf request-matcher-ref="csrfSecurityRequestMatcher"/> 
+	   	<!-- <csrf request-matcher-ref="csrfRequestDataValueProcessor"/> -->
+	
+	   <!-- Session Fixation -->
+	  <session-management session-fixation-protection="migrateSession">  
+	   	<concurrency-control max-sessions="1" />  
+      </session-management>
+      
+	</http>
+
+   	<beans:bean id="myAccessDeniedHandler" class="bucket.application.security.MyAccessDeniedHandler"></beans:bean>
+	<beans:bean id="csrfSecurityRequestMatcher" class="bucket.application.security.CsrfSecurityRequestMatcher"></beans:bean>
+
+	<authentication-manager>
+	  <authentication-provider>
+	    <user-service>
+		<user name="bucket" password="123456" authorities="ROLE_USER" />
+	    </user-service>
+	  </authentication-provider>
+	</authentication-manager> 
+	
+</beans:beans>

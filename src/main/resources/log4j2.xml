@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+<Configuration status="info">
+	<Properties>
+		<Property name="path">/home/uname/logs/</Property>
+	</Properties>
+	<Appenders>
+		<Console name="CA" target="SYSTEM_OUT">
+			<PatternLayout>
+				<pattern>
+					%d{yyyy-MM-dd HH:mm:ss.SSS} [%p] [%t] --- [%C.%M (%F:%L)] - %msg%n
+
+				</pattern>
+			</PatternLayout>
+		</Console>
+		<RollingRandomAccessFile name="ROLL" append="true"
+			immediateFlush="false" fileName="${path}/commonbucket.log"
+			filePattern="${path}/storeservices.%d{yyyyMMdd-HH}.log.gz">
+			<PatternLayout>
+				<Pattern>
+				
+					%d{yyyy-MM-dd HH:mm:ss.SSS} [%p] [%t] --- [%C.%M (%F:%L)] - %msg%n
+				</Pattern>
+			</PatternLayout>
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="4"
+					modulate="true" />
+			</Policies>
+
+		</RollingRandomAccessFile>
+	</Appenders>
+	<Loggers>
+
+
+		<!-- <AsyncLogger name="org.springframework.web" level="off"
+			additivity="false">
+			<appender-ref ref="CA" />
+			<appender-ref ref="ROLL" />
+		</AsyncLogger>
+ -->
+<Root level="INFO" additivity="false" includeLocation="true">
+			<!-- <Appender-Ref ref="CA" /> -->
+			<AppenderRef ref="ROLL" />
+
+		</Root>
+	</Loggers>
+</Configuration>
